@@ -1,0 +1,128 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
+import { toast } from "@/components/ui/use-toast"
+import ExpensesChart from "./ExpensesChart"
+
+interface CategoryTotal {
+  name: string
+  total: number
+  color: string
+}
+
+interface Transaction {
+  _id: string
+  amount: number
+  date: string
+  description: string
+  category: string
+}
+
+export default function DashboardView() {
+  const [totalExpenses, setTotalExpenses] = useState(0)
+  const [categoryTotals, setCategoryTotals] = useState<CategoryTotal[]>([])
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
+
+  async function fetchDashboardData() {
+    try {
+      const [expensesRes, categoriesRes, transactionsRes] = await Promise.all([
+        fetch("/api/transactions/summary"),
+        fetch("/api/transactions/by-category"),
+        fetch("/api/transactions?limit=5"),
+      ])
+
+      const [expensesData, categoriesData, transactionsData] = await Promise.all([
+        expensesRes.json(),
+        categoriesRes.json(),
+        transactionsRes.json(),
+      ])
+
+      setTotalExpenses(expensesData.total)
+      setCategoryTotals(categoriesData)
+      setRecentTransactions(transactionsData)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch dashboard data",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (isLoading) {
+    return <div>Loading dashboard...</div>
+  }
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Total Expenses</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">${totalExpenses.toFixed(2)}</div>
+        </CardContent>
+      </Card>
+
+      <Card className="md:col-span-2">
+        <CardHeader>
+          <CardTitle>Monthly Expenses</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px]">
+            <ExpensesChart />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Category Breakdown</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={categoryTotals} dataKey="total" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
+                  {categoryTotals.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="md:col-span-2">
+        <CardHeader>
+          <CardTitle>Recent Transactions</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {recentTransactions.map((transaction) => (
+              <div key={transaction._id} className="flex justify-between items-center">
+                <div>
+                  <div className="font-medium">{transaction.description}</div>
+                  <div className="text-sm text-muted-foreground">{new Date(transaction.date).toLocaleDateString()}</div>
+                </div>
+                <div className="font-medium">${transaction.amount.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+

@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 import { MongoClient, Db, MongoClientOptions } from "mongodb";
 
 // Ensure the MONGODB_URI environment variable is set

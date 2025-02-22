@@ -8,10 +8,10 @@ if (!process.env.MONGODB_URI) {
 const uri = process.env.MONGODB_URI;
 const options: MongoClientOptions = {
   retryWrites: true,
-  w: "majority", // Explicitly set the type to "majority"
+  w: "majority",
 };
 
-// Declare global variable for development mode
+// Declare global variable type for development mode
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
@@ -20,19 +20,20 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === "development") {
-  // Use a global variable to preserve the connection during HMR
-  if (!global._mongoClientPromise) {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR (Hot Module Replacement).
+  if (!globalThis._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+    globalThis._mongoClientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
+  clientPromise = globalThis._mongoClientPromise;
 } else {
-  // In production, create a new connection
+  // In production mode, it's best to not use a global variable.
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
 
-// Function to connect to the database
+// Export a module-scoped MongoClient promise
 export async function connectToDatabase(): Promise<Db> {
   try {
     const client = await clientPromise;

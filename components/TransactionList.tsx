@@ -34,6 +34,7 @@ export default function TransactionList() {
       const data = await response.json()
       setTransactions(data)
     } catch (error) {
+      console.error(error);
       toast.error("Failed to fetch transactions. Please try again.")
     } finally {
       setIsLoading(false)
@@ -52,6 +53,7 @@ export default function TransactionList() {
       fetchTransactions()
       router.refresh()
     } catch (error) {
+      console.error(error);
       toast.error("Failed to delete transaction. Please try again.")
     }
   }

@@ -25,6 +25,7 @@ export async function GET() {
       .toArray()
     return NextResponse.json(monthlyExpenses)
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to fetch monthly expenses" }, { status: 500 })
   }
 }

@@ -27,6 +27,7 @@ export default function SpendingInsights() {
       const data = await response.json()
       setInsights(data)
     } catch (error) {
+      console.error(error);
       toast.error("Failed to load spending insights")
     } finally {
       setIsLoading(false)

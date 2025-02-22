@@ -21,6 +21,7 @@ export async function GET() {
 
     return NextResponse.json(summary[0] || { total: 0, count: 0, avgTransaction: 0 })
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to fetch summary" }, { status: 500 })
   }
 }

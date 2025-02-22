@@ -47,6 +47,7 @@ export async function GET() {
 
     return NextResponse.json(budgets);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to fetch budgets" }, { status: 500 });
   }
 }
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message: "Budget updated successfully" });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to update budget" }, { status: 500 });
   }
 }
@@ -79,6 +81,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "Budget deleted successfully" });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to delete budget" }, { status: 500 });
   }
 }

@@ -45,6 +45,7 @@ export default function DashboardView() {
       setCategoryTotals(categoriesData);
       setRecentTransactions(transactionsData);
     } catch (error) {
+      console.error(error);
       toast.error("Failed to fetch dashboard data");
     } finally {
       setIsLoading(false);

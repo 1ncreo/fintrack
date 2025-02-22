@@ -46,6 +46,7 @@ export default function BudgetView() {
         const categoryData = await categoryResponse.json();
         setCategories(categoryData);
       } catch (error) {
+        console.error(error);
         toast.error("Failed to load data");
       } finally {
         setIsLoading(false);
@@ -72,6 +73,7 @@ export default function BudgetView() {
       toast.success("Budget updated successfully");
       fetchBudgets(); // Refresh budgets after updating
     } catch (error) {
+      console.error(error);
       toast.error("Failed to update budget");
     }
   }
@@ -88,6 +90,7 @@ export default function BudgetView() {
       toast.success("Budget deleted successfully");
       fetchBudgets(); // Refresh budgets after deletion
     } catch (error) {
+      console.error(error);
       toast.error("Failed to delete budget");
     }
   }
@@ -100,21 +103,12 @@ export default function BudgetView() {
       const data = await response.json();
       setBudgets(data);
     } catch (error) {
+      console.error(error);
       toast.error("Failed to load budgets");
     }
   }
 
   // Function to refresh budgets after transactions change
-  async function refreshBudgetsAfterTransaction() {
-    try {
-      const response = await fetch("/api/budgets");
-      if (!response.ok) throw new Error("Failed to fetch budgets");
-      const data = await response.json();
-      setBudgets(data); // Update the budgets state
-    } catch (error) {
-      toast.error("Failed to refresh budgets");
-    }
-  }
 
   if (isLoading) {
     return <div>Loading budgets...</div>;

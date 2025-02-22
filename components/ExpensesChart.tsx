@@ -26,6 +26,7 @@ export default function ExpensesChart() {
       const data = await response.json()
       setMonthlyExpenses(data)
     } catch (error) {
+      console.error(error);
       toast.error("Failed to fetch monthly expenses. Please try again.")
     } finally {
       setIsLoading(false)

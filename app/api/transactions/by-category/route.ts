@@ -34,6 +34,7 @@ export async function GET() {
 
     return NextResponse.json(categoryTotals)
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to fetch category totals" }, { status: 500 })
   }
 }

@@ -7,6 +7,7 @@ export async function GET() {
     const transactions = await db.collection("transactions").find().sort({ date: -1 }).toArray()
     return NextResponse.json(transactions)
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to fetch transactions" }, { status: 500 })
   }
 }
@@ -29,6 +30,7 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to add transaction" }, { status: 500 });
   }
 }

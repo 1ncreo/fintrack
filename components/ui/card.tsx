@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+type CardProps = React.HTMLAttributes<HTMLDivElement>
 
 function Card({ className, ...props }: CardProps) {
   return (

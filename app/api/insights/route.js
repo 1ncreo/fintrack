@@ -94,6 +94,7 @@ export async function GET() {
 
     return NextResponse.json(insights);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to generate insights" }, { status: 500 });
   }
 }

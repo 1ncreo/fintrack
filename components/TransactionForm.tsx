@@ -49,6 +49,7 @@ export default function TransactionForm({ initialData, onSuccess }: TransactionF
       const data = await response.json()
       setCategories(data)
     } catch (error) {
+      console.error(error);
       toast.error("Failed to load categories")
     }
   }
@@ -89,6 +90,7 @@ export default function TransactionForm({ initialData, onSuccess }: TransactionF
       router.refresh()
       onSuccess?.()
     } catch (error) {
+      console.error(error);
       toast.error(`Failed to ${initialData ? "update" : "add"} transaction. Please try again.`)
     } finally {
       setIsLoading(false)

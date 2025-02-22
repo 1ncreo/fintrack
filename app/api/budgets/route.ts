@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server"
-import { connectToDatabase } from "@/lib/mongodb"
+// api/budgets/route.js
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET() {
   try {
-    const db = await connectToDatabase()
+    const db = await connectToDatabase();
 
-    // Get all budgets and actual spending
+    // Get all budgets and calculate spending for each category
     const budgets = await db
       .collection("budgets")
       .aggregate([
@@ -42,24 +43,42 @@ export async function GET() {
           },
         },
       ])
-      .toArray()
+      .toArray();
 
-    return NextResponse.json(budgets)
+    return NextResponse.json(budgets);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch budgets" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to fetch budgets" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const { category, amount } = await request.json()
-    const db = await connectToDatabase()
+    const { category, amount } = await request.json();
+    const db = await connectToDatabase();
 
-    await db.collection("budgets").updateOne({ category }, { $set: { amount } }, { upsert: true })
+    // Update or create a budget
+    await db.collection("budgets").updateOne(
+      { category },
+      { $set: { amount } },
+      { upsert: true }
+    );
 
-    return NextResponse.json({ message: "Budget updated successfully" })
+    return NextResponse.json({ message: "Budget updated successfully" });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update budget" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to update budget" }, { status: 500 });
   }
 }
 
+export async function DELETE(request: Request) {
+  try {
+    const { category } = await request.json();
+    const db = await connectToDatabase();
+
+    // Delete a budget
+    await db.collection("budgets").deleteOne({ category });
+
+    return NextResponse.json({ message: "Budget deleted successfully" });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to delete budget" }, { status: 500 });
+  }
+}

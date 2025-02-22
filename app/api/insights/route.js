@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server"
-import { connectToDatabase } from "@/lib/mongodb"
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET() {
   try {
-    const db = await connectToDatabase()
+    const db = await connectToDatabase();
 
     // Get current month's data
-    const currentMonth = new Date()
-    const previousMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+    const currentMonth = new Date();
+    const previousMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
 
     // Get transactions for current and previous month
     const [currentMonthData, previousMonthData, budgets] = await Promise.all([
@@ -52,17 +52,17 @@ export async function GET() {
         .toArray(),
 
       db.collection("budgets").find().toArray(),
-    ])
+    ]);
 
-    const insights = []
+    const insights = [];
 
     // Compare with previous month
     currentMonthData.forEach((current) => {
-      const previous = previousMonthData.find((p) => p._id === current._id)
-      const budget = budgets.find((b) => b.category === current._id)
+      const previous = previousMonthData.find((p) => p._id === current._id);
+      const budget = budgets.find((b) => b.category === current._id);
 
       if (previous) {
-        const percentageChange = ((current.total - previous.total) / previous.total) * 100
+        const percentageChange = ((current.total - previous.total) / previous.total) * 100;
 
         if (percentageChange > 20) {
           insights.push({
@@ -70,14 +70,14 @@ export async function GET() {
             category: current._id,
             message: `Spending increased by ${percentageChange.toFixed(1)}% compared to last month`,
             percentage: percentageChange,
-          })
+          });
         } else if (percentageChange < -20) {
           insights.push({
             type: "improvement",
             category: current._id,
             message: `Spending decreased by ${Math.abs(percentageChange).toFixed(1)}% compared to last month`,
             percentage: percentageChange,
-          })
+          });
         }
       }
 
@@ -88,13 +88,12 @@ export async function GET() {
           category: current._id,
           message: `Over budget by $${(current.total - budget.amount).toFixed(2)}`,
           percentage: ((current.total - budget.amount) / budget.amount) * 100,
-        })
+        });
       }
-    })
+    });
 
-    return NextResponse.json(insights)
+    return NextResponse.json(insights);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to generate insights" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to generate insights" }, { status: 500 });
   }
 }
-

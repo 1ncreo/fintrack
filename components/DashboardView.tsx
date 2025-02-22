@@ -126,7 +126,7 @@ export default function DashboardView() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {recentTransactions.map((transaction) => (
+            {recentTransactions.slice(0, 5).map((transaction) => (
               <div key={transaction._id} className="flex justify-between items-center">
                 <div>
                   <div className="font-medium">{transaction.description}</div>

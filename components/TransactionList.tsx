@@ -4,9 +4,9 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { toast } from "@/components/ui/use-toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import TransactionForm from "./TransactionForm"
+import { toast } from "sonner"
 
 interface Transaction {
   _id: string
@@ -34,11 +34,7 @@ export default function TransactionList() {
       const data = await response.json()
       setTransactions(data)
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch transactions. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Failed to fetch transactions. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -52,18 +48,11 @@ export default function TransactionList() {
       if (!response.ok) {
         throw new Error("Failed to delete transaction")
       }
-      toast({
-        title: "Transaction deleted",
-        description: "The transaction has been successfully deleted.",
-      })
+      toast.success("The transaction has been successfully deleted.")
       fetchTransactions()
       router.refresh()
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete transaction. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Failed to delete transaction. Please try again.")
     }
   }
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
-import { toast } from "@/components/ui/use-toast"
+import { toast } from "sonner"
 import ExpensesChart from "./ExpensesChart"
 
 interface CategoryTotal {
@@ -48,11 +48,7 @@ export default function DashboardView() {
       setCategoryTotals(categoriesData)
       setRecentTransactions(transactionsData)
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch dashboard data",
-        variant: "destructive",
-      })
+      toast.error("Failed to fetch dashboard data")
     } finally {
       setIsLoading(false)
     }

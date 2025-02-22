@@ -8,8 +8,8 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { toast } from "@/components/ui/sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   amount: z.number().min(0.01, "Amount must be greater than 0"),
@@ -49,11 +49,7 @@ export default function TransactionForm({ initialData, onSuccess }: TransactionF
       const data = await response.json()
       setCategories(data)
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load categories",
-        variant: "destructive",
-      })
+      toast.error("Failed to load categories")
     }
   }
 
@@ -84,10 +80,7 @@ export default function TransactionForm({ initialData, onSuccess }: TransactionF
         throw new Error(`Failed to ${initialData ? "update" : "add"} transaction`)
       }
 
-      toast({
-        title: `Transaction ${initialData ? "updated" : "added"}`,
-        description: `Your transaction has been successfully ${initialData ? "updated" : "added"}.`,
-      })
+      toast.success(`Transaction ${initialData ? "updated" : "added"} successfully`)
 
       if (!initialData) {
         form.reset()
@@ -96,11 +89,7 @@ export default function TransactionForm({ initialData, onSuccess }: TransactionF
       router.refresh()
       onSuccess?.()
     } catch (error) {
-      toast({
-        title: "Error",
-        description: `Failed to ${initialData ? "update" : "add"} transaction. Please try again.`,
-        variant: "destructive",
-      })
+      toast.error(`Failed to ${initialData ? "update" : "add"} transaction. Please try again.`)
     } finally {
       setIsLoading(false)
     }

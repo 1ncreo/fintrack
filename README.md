@@ -1,6 +1,7 @@
 # Personal Finance Tracker
 
-Deployed on ** https://fintrack-lyart.vercel.app/ ** (Check it out)
+Deployed on https://fintrack-lyart.vercel.app/ ** (Check it out) **
+
 A Next.js-based web application designed to help users track their personal finances. This app allows users to manage budgets, log transactions, and gain insights into their spending habits.
 
 ## Features
